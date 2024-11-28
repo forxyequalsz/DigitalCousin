@@ -13,10 +13,10 @@
 
 ## 其他资源
 
-* weight：存放groundingDINO和SAM的预训练权重文件。
 * docs：资源库，目前包括用于校准相机的棋盘格图、校准用的图片和用于测试的图片。
 * camera_caliparams.json：存储的相机校准矩阵。
 * HistoryCodes：存储了尝试过程中（多数是半对半错的）的code
+* *weight：存放groundingDINO和SAM的预训练权重文件。（太大了传不了git）
 
 ## 安装外部依赖
 

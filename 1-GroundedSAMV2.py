@@ -7,16 +7,16 @@ from groundingdino.util import box_ops
 from segment_anything import build_sam, SamPredictor
 from PIL import Image
 
-# 自动选择设备
+# 基于运行平台使用加速
 if torch.backends.mps.is_available():
     device = torch.device("mps")
-    print("Using MPS (Metal Performance Shaders) for acceleration.")
+    print("使用 MPS (Metal Performance Shaders) 加速计算。")
 elif torch.cuda.is_available():
     device = torch.device("cuda")
-    print("Using CUDA for acceleration.")
+    print("使用 CUDA 加速计算。")
 else:
     device = torch.device("cpu")
-    print("Using CPU for computation.")
+    print("使用 CPU 计算")
 
 # 配置路径
 CONFIG_PATH = "docs/groundingdino_config/GroundingDINO_SwinT_OGC.py"
@@ -39,7 +39,7 @@ def resize_image(image_path, max_width, max_height):
 
 # 执行图像缩放
 resized_image_path = resize_image(IMAGE_PATH, max_width, max_height)
-print(f"Resized image saved at {resized_image_path}")
+print(f"图像进行缩放，并存储于 {resized_image_path}")
 
 # 加载Grounding DINO模型和缩放后图片
 image_source, image = load_image(resized_image_path)
@@ -92,7 +92,7 @@ def save_masks(masks, output_dir="SegmentImage/Masks"):
         mask_image = (mask.squeeze(0).cpu().numpy() * 255).astype(np.uint8)
         mask_path = os.path.join(output_dir, f"mask_{i+1}.png")
         cv2.imwrite(mask_path, mask_image)
-        print(f"Saved mask {i+1} to {mask_path}")
+        print(f"已将mask {i+1} 存储至 {mask_path}")
 
 # 将掩码叠加到已有标注图上
 def overlay_masks(image, masks):
@@ -117,4 +117,4 @@ final_image = overlay_masks(annotated_image, masks)
 output_path = "SegmentImage/annotated_image_with_masks.jpg"
 os.makedirs(os.path.dirname(output_path), exist_ok=True)
 cv2.imwrite(output_path, final_image)
-print(f"Final result saved as '{output_path}'")
+print(f"最终结果（叠加图）存储至 '{output_path}'")
