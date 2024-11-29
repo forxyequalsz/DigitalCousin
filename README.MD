@@ -3,7 +3,7 @@
 ## 实现
 
 * 1-CameraCalibration.py：负责基于OpenCV生成相机校准矩阵。
-* 1-DepthAnythingV2.py：负责基于Depth-Anything-V2生成深度图。
+* 1-DepthAnythingV2.py：负责基于Depth-Anything-V2生成深度图和点云模型。
 * 1-GroundedSAMV2.py：负责基于prompt（稍作修改就可以通过GPT的API调用自动获取prompt），分割出指定物体的mask。
 
 ## 输出
