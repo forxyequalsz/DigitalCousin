@@ -6,6 +6,7 @@ from groundingdino.util.inference import load_model, load_image, predict, annota
 from groundingdino.util import box_ops
 from segment_anything import build_sam, SamPredictor
 from PIL import Image
+from libs.resize_image import resize_image
 
 # 基于运行平台使用加速
 if torch.backends.mps.is_available():
@@ -24,21 +25,10 @@ CHECKPOINT_PATH = "docs/weight/groundingDINO/groundingdino_swint_ogc.pth"
 IMAGE_PATH = "docs/test_images/DSC_3752.JPG"
 TEXT_PROMPT = "computer"
 
-# 目标图像缩放的最大宽度和高度
-max_width = 1200  # 设置最大宽度
-max_height = 1200  # 设置最大高度
-
-# 图像缩放
-def resize_image(image_path, max_width, max_height):
-    image = Image.open(image_path)
-    image.thumbnail((max_width, max_height), Image.Resampling.LANCZOS)
-    # 保存缩放后的图像为临时文件
-    resized_image_path = "docs/test_images/resized_image.jpg"
-    image.save(resized_image_path)
-    return resized_image_path
-
-# 执行图像缩放
-resized_image_path = resize_image(IMAGE_PATH, max_width, max_height)
+# 调用 resize_image 函数来缩放图像
+resized_image = resize_image(IMAGE_PATH)
+resized_image_path = "docs/test_images/resized_image.jpg"
+cv2.imwrite(resized_image_path, resized_image)
 print(f"图像进行缩放，并存储于 {resized_image_path}")
 
 # 加载Grounding DINO模型和缩放后图片
