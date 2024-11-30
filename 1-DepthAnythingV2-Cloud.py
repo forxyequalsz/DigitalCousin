@@ -10,7 +10,6 @@ from libs.resize_image import resize_image
 
 # 确保设备设置为 MPS（如果在 M1/M2 Mac 上）或 CPU
 print("Checking device...")
-# device = torch.device("mps" if torch.backends.mps.is_available() else "cpu")
 device = torch.device("cpu")
 print(f"Using device: {device}")
 
@@ -24,12 +23,13 @@ pipe = pipeline(task="depth-estimation", model="depth-anything/Depth-Anything-V2
 # 打开图像并调整大小（避免图像过大，导致计算时间过长）
 IMAGE_PATH = 'docs/test_images/DSC_3752.JPG'
 resized_image = resize_image(IMAGE_PATH)
+
 # 保存缩放后图片
 resized_image_path = "docs/test_images/resized_image.jpg"
 cv2.imwrite(resized_image_path, resized_image)
 print(f"图像进行缩放，并存储于 {resized_image_path}")
 
-# 缩放后的图片路径赋值给image
+# 缩放后的图片路径赋值给 image
 image = resized_image_path
 
 # 执行深度估计
@@ -47,7 +47,7 @@ depth_image = Image.fromarray((255 * (depth_array / np.max(depth_array))).astype
 depth_image.save("DepthImage/depth_image.png")
 print("Depth image saved successfully.")
 
-# 加载相机内参矩阵（假设文件为 camera_caliparams.json）
+# 加载相机内参矩阵（假设文件为）
 with open('camera_caliparams.json', 'r') as f:
     params = json.load(f)
 camera_matrix = np.array(params['camera_matrix'])
@@ -64,8 +64,10 @@ for v in range(height):
         z = depth_array[v, u]
         if z == 0:
             continue
+        # 修正坐标系方向，确保符合惯用右手坐标系
         x = (u - cx) * z / fx
-        y = (v - cy) * z / fy
+        y = -(v - cy) * z / fy  # y轴取反后z轴勿取反，否则坐标系又反转了
+        # z = -z  # 将 Z 轴取反，确保深度方向为正方向
         points.append([x, y, z])
 
 points = np.array(points)
@@ -73,16 +75,12 @@ points = np.array(points)
 # 创建 PyVista 点云对象
 point_cloud = pv.PolyData(points)
 
-# 修正水平镜像问题
-point_cloud.points[:, 0] *= -1
-
 # 可视化点云图
 print("Visualizing point cloud...")
-# point_cloud.plot(render_points_as_spheres=True, point_size=5, color='gray')
 plotter = pv.Plotter()
 plotter.add_mesh(point_cloud, render_points_as_spheres=True, point_size=5, color='gray')
 plotter.show_grid()
-plotter.camera_position = [(0, 0, 20), (0, 0, 0), (0, -1, 0)]
+plotter.camera_position = [(0, 0, 20), (0, 0, 0), (0, 1, 0)]
 plotter.show()
 print("Point cloud visualization complete.")
 
