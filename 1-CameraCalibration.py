@@ -19,8 +19,8 @@ objp = np.zeros((pattern_size[0] * pattern_size[1], 3), np.float32)
 objp[:, :2] = np.mgrid[0:pattern_size[0], 0:pattern_size[1]].T.reshape(-1, 2)
 
 # 初始化存储矩阵
-objpoints = []  # 3D points in real-world space
-imgpoints = []  # 2D points in image plane
+objpoints = []  # 3D点现实空间
+imgpoints = []  # 2D点图像平面
 
 # 检测角点
 for image_path in image_paths:
