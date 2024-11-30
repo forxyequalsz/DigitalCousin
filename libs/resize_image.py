@@ -29,6 +29,6 @@ def resize_image(image_path, config_file='config.json'):
         scale_factor = max_image_size / max_dim
         new_width = int(width * scale_factor)
         new_height = int(height * scale_factor)
-        image = cv2.resize(image, (new_width, new_height), interpolation=cv2.INTER_LINEAR)
+        image = cv2.resize(image, (new_width, new_height), interpolation=cv2.INTER_CUBIC)
 
     return image
