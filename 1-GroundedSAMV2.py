@@ -5,7 +5,6 @@ import os
 from groundingdino.util.inference import load_model, load_image, predict, annotate
 from groundingdino.util import box_ops
 from segment_anything import build_sam, SamPredictor
-from PIL import Image
 from libs.resize_image import resize_image
 
 # 基于运行平台使用加速

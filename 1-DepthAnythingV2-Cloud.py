@@ -8,7 +8,7 @@ from transformers import pipeline
 from PIL import Image
 from libs.resize_image import resize_image
 
-# 确保设备设置为 MPS（如果在 M1/M2 Mac 上）或 CPU
+# 确保设备设置为 CPU
 print("Checking device...")
 device = torch.device("cpu")
 print(f"Using device: {device}")
@@ -47,7 +47,7 @@ depth_image = Image.fromarray((255 * (depth_array / np.max(depth_array))).astype
 depth_image.save("DepthImage/depth_image.png")
 print("Depth image saved successfully.")
 
-# 加载相机内参矩阵（假设文件为）
+# 加载相机内参矩阵（假设文件为 camera_caliparams.json）
 with open('camera_caliparams.json', 'r') as f:
     params = json.load(f)
 camera_matrix = np.array(params['camera_matrix'])
@@ -66,8 +66,7 @@ for v in range(height):
             continue
         # 修正坐标系方向，确保符合惯用右手坐标系
         x = (u - cx) * z / fx
-        y = -(v - cy) * z / fy  # y轴取反后z轴勿取反，否则坐标系又反转了
-        # z = -z  # 将 Z 轴取反，确保深度方向为正方向
+        y = -(v - cy) * z / fy  # 注意这里对 y 取负，确保坐标系一致性
         points.append([x, y, z])
 
 points = np.array(points)
@@ -80,7 +79,7 @@ print("Visualizing point cloud...")
 plotter = pv.Plotter()
 plotter.add_mesh(point_cloud, render_points_as_spheres=True, point_size=5, color='gray')
 plotter.show_grid()
-plotter.camera_position = [(0, 0, 20), (0, 0, 0), (0, 1, 0)]
+plotter.camera_position = [(0, 0, 20), (0, 0, 0), (0, 1, 0)]  # 设置初始相机视角，确保上下方向正确
 plotter.show()
 print("Point cloud visualization complete.")
 
